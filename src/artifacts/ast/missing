@@ -1,0 +1,38 @@
+90:    Block, // notok
+91:    Break, // notok
+92:    Continue, // notok
+93:    DoWhileStatement, // notok
+99:    PlaceholderStatement, // notok
+124:    TypeName; // notok (i think because of String(String))
+174:        canonical_name: Option<String>, // notok
+186:        used_events: Vec<usize>, // notok
+188:        internal_function_ids: BTreeMap<String, usize>, // notok
+209:        base_name: UserDefinedTypeNameOrIdentifierPath, // notok
+353:        type_name: ElementaryOrRawTypeName, // notok
+360:pub enum ElementaryOrRawTypeName { // notok
+428:        index_expression: Option<Expression>, // notok
+465:    UnicodeString, // notok
+549:impl VariableDeclaration { // notok
+576:        overrides: Vec<UserDefinedTypeNameOrIdentifierPath>, // notok
+584:        contract_scope: Option<String>, // notok // TODO
+676:        error_selector: Option<String>, // notok // TODO
+688:        event_selector: Option<String>, // notok // TODO
+716:        kind: Option<FunctionKind>, // notok
+722:        state_mutability: Option<StateMutability>, // notok
+724:        is_virtual: bool, // notok
+731:        is_constructor: bool, // notok
+738:        is_declared_const: bool, // notok
+745:        is_payable: bool, // notok
+797:        documentation: Option<String>, // notok
+815:    struct DoWhileStatement { // notok
+841:        loop_expression: Option<ExpressionStatement>, // notok
+873:        external_references: Vec<ExternalInlineAssemblyReference>, // notok
+875:        flags: Vec<InlineAssemblyFlag>, // notok
+882:pub struct ExternalInlineAssemblyReference { // notok
+899:pub enum AssemblyReferenceSuffix {                // notok
+912:    MemorySafe, // notok
+954:    struct UncheckedBlock { // notok
+955:        statements: Vec<Statement>, // notok 
+973:        modifier_name: IdentifierOrIdentifierPath, // notok
+994:        base_modifiers: Vec<usize>, // notok
+1079:    pub foreign: Identifier, // notok 

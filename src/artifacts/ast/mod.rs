@@ -50,19 +50,22 @@ ast_node!(
 node_group! {
     SourceUnitPart;
 
-    PragmaDirective,
-    ImportDirective,
-    UsingForDirective,
-    VariableDeclaration,
-    EnumDefinition,
-    ErrorDefinition,
-    FunctionDefinition,
-    StructDefinition,
-    UserDefinedValueTypeDefinition,
-    ContractDefinition,
+    // ok - inspection only at the top level 
+    // TODO: later dive deep into AST Node
+
+    PragmaDirective, // ok
+    ImportDirective, // ok
+    UsingForDirective, // ok
+    VariableDeclaration, // ok
+    EnumDefinition, // ok
+    ErrorDefinition, // ok
+    FunctionDefinition, // ok
+    StructDefinition, // ok
+    UserDefinedValueTypeDefinition, // ok
+    ContractDefinition, // ok
 }
 
-node_group! {
+node_group! {         // ok
     Expression;
 
     Assignment,
@@ -84,41 +87,41 @@ node_group! {
 node_group! {
     Statement;
 
-    Block,
-    Break,
-    Continue,
-    DoWhileStatement,
-    EmitStatement,
-    ExpressionStatement,
-    ForStatement,
-    IfStatement,
-    InlineAssembly,
-    PlaceholderStatement,
-    Return,
-    RevertStatement,
-    TryStatement,
-    UncheckedBlock,
-    VariableDeclarationStatement,
-    WhileStatement,
+    Block, // notok
+    Break, // notok
+    Continue, // notok
+    DoWhileStatement, // notok
+    EmitStatement, // ok
+    ExpressionStatement, // ok
+    ForStatement, // ok
+    IfStatement,// ok
+    InlineAssembly, // ok
+    PlaceholderStatement, // notok
+    Return, // ok
+    RevertStatement, // ok
+    TryStatement, // ok
+    UncheckedBlock, // ok
+    VariableDeclarationStatement, // ok
+    WhileStatement, // ok
 
 }
 
 node_group! {
     ContractDefinitionPart;
 
-    EnumDefinition,
-    ErrorDefinition,
-    EventDefinition,
-    FunctionDefinition,
-    ModifierDefinition,
-    StructDefinition,
-    UserDefinedValueTypeDefinition,
-    UsingForDirective,
-    VariableDeclaration,
+    EnumDefinition, // ok
+    ErrorDefinition, // ok
+    EventDefinition, // ok
+    FunctionDefinition, // ok
+    ModifierDefinition, // ok
+    StructDefinition, // ok
+    UserDefinedValueTypeDefinition, // ok
+    UsingForDirective, // ok
+    VariableDeclaration, // ok
 }
 
 node_group! {
-    TypeName;
+    TypeName; // notok (i think because of String(String))
 
     ArrayTypeName,
     ElementaryTypeName,
@@ -162,27 +165,27 @@ node_group! {
 ast_node!(
     /// A contract definition.
     struct ContractDefinition {
-        name: String,
+        name: String, // ok
         #[serde(default, with = "serde_helpers::display_from_str_opt")]
-        name_location: Option<SourceLocation>,
+        name_location: Option<SourceLocation>, // ok
         #[serde(default, rename = "abstract")]
-        is_abstract: bool,
-        base_contracts: Vec<InheritanceSpecifier>,
-        canonical_name: Option<String>,
-        contract_dependencies: Vec<usize>,
+        is_abstract: bool, // ok
+        base_contracts: Vec<InheritanceSpecifier>, // ok
+        canonical_name: Option<String>, // notok
+        contract_dependencies: Vec<usize>, // ok
         #[serde(rename = "contractKind")]
-        kind: ContractKind,
-        documentation: Option<StructuredDocumentation>,
-        fully_implemented: bool,
-        linearized_base_contracts: Vec<usize>,
-        nodes: Vec<ContractDefinitionPart>,
-        scope: usize,
+        kind: ContractKind, // ok
+        documentation: Option<StructuredDocumentation>, // ok
+        fully_implemented: bool, // ok
+        linearized_base_contracts: Vec<usize>, // ok
+        nodes: Vec<ContractDefinitionPart>, // ok
+        scope: usize, // ok
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
-        used_errors: Vec<usize>,
+        used_errors: Vec<usize>, // ok
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
-        used_events: Vec<usize>,
+        used_events: Vec<usize>, // notok
         #[serde(default, rename = "internalFunctionIDs")]
-        internal_function_ids: BTreeMap<String, usize>,
+        internal_function_ids: BTreeMap<String, usize>, // notok
     }
 );
 
@@ -191,30 +194,30 @@ ast_node!(
 #[serde(rename_all = "camelCase")]
 pub enum ContractKind {
     /// A normal contract.
-    Contract,
+    Contract, // ok
     /// An interface.
-    Interface,
+    Interface, // ok
     /// A library.
-    Library,
+    Library, // ok
 }
 
 ast_node!(
     /// An inheritance specifier.
     struct InheritanceSpecifier {
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
-        arguments: Vec<Expression>,
-        base_name: UserDefinedTypeNameOrIdentifierPath,
+        arguments: Vec<Expression>, // ok
+        base_name: UserDefinedTypeNameOrIdentifierPath, // notok
     }
 );
 
 expr_node!(
     /// An assignment expression.
     struct Assignment {
-        #[serde(rename = "leftHandSide")]
-        lhs: Expression,
-        operator: AssignmentOperator,
+        #[serde(rename = "leftHandSide")] 
+        lhs: Expression, // ok
+        operator: AssignmentOperator, // ok
         #[serde(rename = "rightHandSide")]
-        rhs: Expression,
+        rhs: Expression, // ok
     }
 );
 
@@ -259,12 +262,12 @@ pub enum AssignmentOperator {
 ast_node!(
     /// A binary operation.
     struct BinaryOperation {
-        common_type: TypeDescriptions,
+        common_type: TypeDescriptions, // ok
         #[serde(rename = "leftExpression")]
-        lhs: Expression,
-        operator: BinaryOperator,
-        #[serde(rename = "rightExpression")]
-        rhs: Expression,
+        lhs: Expression, // ok
+        operator: BinaryOperator, // okish
+        #[serde(rename = "rightExpression")] 
+        rhs: Expression, // ok
     }
 );
 
@@ -337,24 +340,24 @@ expr_node!(
     /// A conditional expression.
     struct Conditional {
         /// The condition.
-        condition: Expression,
+        condition: Expression, // ok
         /// The expression to evaluate if falsy.
-        false_expression: Expression,
+        false_expression: Expression, // ok
         /// The expression to evaluate if truthy.
-        true_expression: Expression,
+        true_expression: Expression, // ok
     }
 );
 
 expr_node!(
     struct ElementaryTypeNameExpression {
-        type_name: ElementaryOrRawTypeName,
+        type_name: ElementaryOrRawTypeName, // notok
     }
 );
 
 // TODO: Better name
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum ElementaryOrRawTypeName {
+pub enum ElementaryOrRawTypeName { // notok
     /// An [ElementaryTypeName] node that describes the type.
     ///
     /// This variant applies to newer compiler versions.
@@ -367,21 +370,21 @@ pub enum ElementaryOrRawTypeName {
 
 ast_node!(
     struct ElementaryTypeName {
-        type_descriptions: TypeDescriptions,
-        name: String,
-        state_mutability: Option<StateMutability>,
+        type_descriptions: TypeDescriptions, // ok
+        name: String, // ok
+        state_mutability: Option<StateMutability>, // ok
     }
 );
 
 expr_node!(
     /// A function call expression.
-    struct FunctionCall {
-        arguments: Vec<Expression>,
-        expression: Expression,
-        kind: FunctionCallKind,
-        names: Vec<String>,
+    struct FunctionCall { // ok
+        arguments: Vec<Expression>, // ok
+        expression: Expression, // ok
+        kind: FunctionCallKind, // ok
+        names: Vec<String>, // ok
         #[serde(default)]
-        try_call: bool,
+        try_call: bool, // ok
     }
 );
 
@@ -390,19 +393,19 @@ expr_node!(
 #[serde(rename_all = "camelCase")]
 pub enum FunctionCallKind {
     /// A regular function call.
-    FunctionCall,
+    FunctionCall, // ok
     /// A type conversion (e.g. `bytes(x)`).
-    TypeConversion,
+    TypeConversion, // ok
     /// A struct constructor call (e.g. `MyStruct({ ... })`).
-    StructConstructorCall,
+    StructConstructorCall, // ok
 }
 
 expr_node!(
     /// A function call options expression (e.g. `x.f{gas: 1}`).
-    struct FunctionCallOptions {
-        expression: Expression,
-        names: Vec<String>,
-        options: Vec<Expression>,
+    struct FunctionCallOptions { // ok
+        expression: Expression, // ok 
+        names: Vec<String>, // ok
+        options: Vec<Expression>, // ok
     }
 );
 
@@ -410,39 +413,39 @@ ast_node!(
     /// An identifier.
     struct Identifier {
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
-        argument_types: Vec<TypeDescriptions>,
-        name: String,
-        overloaded_declarations: Vec<isize>,
-        referenced_declaration: Option<isize>,
-        type_descriptions: TypeDescriptions,
+        argument_types: Vec<TypeDescriptions>, // ok
+        name: String, // ok
+        overloaded_declarations: Vec<isize>, // ok
+        referenced_declaration: Option<isize>, // ok
+        type_descriptions: TypeDescriptions, // ok
     }
 );
 
 expr_node!(
     /// An index access.
     struct IndexAccess {
-        base_expression: Expression,
-        index_expression: Option<Expression>,
+        base_expression: Expression, // okish
+        index_expression: Option<Expression>, // notok
     }
 );
 
 expr_node!(
     /// An index range access.
     struct IndexRangeAccess {
-        base_expression: Expression,
-        start_expression: Option<Expression>,
-        end_expression: Option<Expression>,
+        base_expression: Expression, // ok
+        start_expression: Option<Expression>, // ok
+        end_expression: Option<Expression>, // ok
     }
 );
 
-expr_node!(
+expr_node!( // ok
     /// A literal value.
     struct Literal {
         // TODO
-        hex_value: String,
-        kind: LiteralKind,
-        subdenomination: Option<String>, // TODO
-        value: Option<String>,           // TODO
+        hex_value: String, // okish
+        kind: LiteralKind, // ok
+        subdenomination: Option<String>, // ok // TODO
+        value: Option<String>,     // ok      // TODO
     }
 );
 
@@ -459,91 +462,91 @@ pub enum LiteralKind {
     /// A hexadecimal string.
     HexString,
     /// A unicode string.
-    UnicodeString,
+    UnicodeString, // notok
 }
 
 expr_node!(
     /// Member access.
     struct MemberAccess {
-        expression: Expression,
-        member_name: String,
-        referenced_declaration: Option<isize>,
+        expression: Expression, // ok
+        member_name: String, // ok
+        referenced_declaration: Option<isize>, // ok
     }
 );
 
 expr_node!(
     /// A `new` expression.
     struct NewExpression {
-        type_name: TypeName,
+        type_name: TypeName, // ok
     }
 );
 
 ast_node!(
     /// An array type name.
     struct ArrayTypeName {
-        type_descriptions: TypeDescriptions,
-        base_type: TypeName,
-        length: Option<Expression>,
+        type_descriptions: TypeDescriptions, // ok
+        base_type: TypeName, // ok
+        length: Option<Expression>, // ok
     }
 );
 
 ast_node!(
     /// A function type name.
     struct FunctionTypeName {
-        type_descriptions: TypeDescriptions,
-        parameter_types: ParameterList,
-        return_parameter_types: ParameterList,
-        state_mutability: StateMutability,
-        visibility: Visibility,
+        type_descriptions: TypeDescriptions, // ok
+        parameter_types: ParameterList, // ok
+        return_parameter_types: ParameterList, // ok
+        state_mutability: StateMutability, // ok
+        visibility: Visibility, // ok
     }
 );
 
 ast_node!(
     /// A parameter list.
     struct ParameterList {
-        parameters: Vec<VariableDeclaration>,
+        parameters: Vec<VariableDeclaration>, // ok
     }
 );
 
 ast_node!(
     /// A variable declaration.
     struct VariableDeclaration {
-        name: String,
+        name: String, // ok
         #[serde(default, with = "serde_helpers::display_from_str_opt")]
-        name_location: Option<SourceLocation>,
+        name_location: Option<SourceLocation>, // ok
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
-        base_functions: Vec<usize>,
+        base_functions: Vec<usize>, // ok
         /// Marks whether or not the variable is a constant before Solidity 0.7.x.
         ///
         /// After 0.7.x you must use `mutability`. For cross-version compatibility use
         /// [`VariableDeclaration::mutability()`].
         #[serde(default)]
-        constant: bool,
+        constant: bool, // ok
         /// Marks whether or not the variable is a state variable before Solidity 0.7.x.
         ///
         /// After 0.7.x you must use `mutability`. For cross-version compatibility use
         /// [`VariableDeclaration::mutability()`].
         #[serde(default)]
-        state_variable: bool,
+        state_variable: bool, // ok
         documentation: Option<StructuredDocumentation>,
         function_selector: Option<String>, // TODO
         #[serde(default)]
-        indexed: bool,
+        indexed: bool, // ok
         /// Marks the variable's mutability from Solidity 0.7.x onwards.
         /// For cross-version compatibility use [`VariableDeclaration::mutability()`].
         #[serde(default)]
-        mutability: Option<Mutability>,
-        overrides: Option<OverrideSpecifier>,
-        scope: usize,
-        storage_location: StorageLocation,
-        type_descriptions: TypeDescriptions,
-        type_name: Option<TypeName>,
-        value: Option<Expression>,
-        visibility: Visibility,
+        mutability: Option<Mutability>, // ok
+        overrides: Option<OverrideSpecifier>, // ok
+        scope: usize, // ok
+        storage_location: StorageLocation, // ok
+        type_descriptions: TypeDescriptions, // ok
+        type_name: Option<TypeName>, // ok
+        value: Option<Expression>, // ok
+        visibility: Visibility, // ok
     }
 );
 
-impl VariableDeclaration {
+impl VariableDeclaration { // notok
     /// Returns the mutability of the variable that was declared.
     ///
     /// This is a helper to check variable mutability across Solidity versions.
@@ -570,53 +573,53 @@ ast_node!(
 ast_node!(
     /// An override specifier.
     struct OverrideSpecifier {
-        overrides: Vec<UserDefinedTypeNameOrIdentifierPath>,
+        overrides: Vec<UserDefinedTypeNameOrIdentifierPath>, // notok
     }
 );
 
 ast_node!(
     /// A user defined type name.
     struct UserDefinedTypeName {
-        type_descriptions: TypeDescriptions,
-        contract_scope: Option<String>, // TODO
-        name: Option<String>,
-        path_node: Option<IdentifierPath>,
-        referenced_declaration: isize,
+        type_descriptions: TypeDescriptions, // ok
+        contract_scope: Option<String>, // notok // TODO
+        name: Option<String>, // ok
+        path_node: Option<IdentifierPath>, // ok
+        referenced_declaration: isize, // ok
     }
 );
 
 ast_node!(
     /// An identifier path.
     struct IdentifierPath {
-        name: String,
-        referenced_declaration: isize,
+        name: String, // ok
+        referenced_declaration: isize, // ok
     }
 );
 
 ast_node!(
     /// A mapping type.
     struct Mapping {
-        type_descriptions: TypeDescriptions,
-        key_type: TypeName,
-        value_type: TypeName,
+        type_descriptions: TypeDescriptions, // ok
+        key_type: TypeName, // ok
+        value_type: TypeName, // ok
     }
 );
 
 expr_node!(
     /// A tuple expression.
     struct TupleExpression {
-        components: Vec<Option<Expression>>,
-        is_inline_array: bool,
+        components: Vec<Option<Expression>>, // ok
+        is_inline_array: bool, // ok
     }
 );
 
 expr_node!(
     /// A unary operation.
     struct UnaryOperation {
-        operator: UnaryOperator,
+        operator: UnaryOperator, // okish
         /// Whether the unary operator is before or after the expression (e.g. `x++` vs. `++x`)
-        prefix: bool,
-        sub_expression: Expression,
+        prefix: bool, // ok
+        sub_expression: Expression, // ok
     }
 );
 
@@ -646,100 +649,100 @@ pub enum UnaryOperator {
 ast_node!(
     /// An enum definition.
     struct EnumDefinition {
-        name: String,
+        name: String, // ok
         #[serde(default, with = "serde_helpers::display_from_str_opt")]
-        name_location: Option<SourceLocation>,
-        canonical_name: String,
-        members: Vec<EnumValue>,
+        name_location: Option<SourceLocation>, // ok
+        canonical_name: String, // ok
+        members: Vec<EnumValue>, // ok
     }
 );
 
 ast_node!(
     /// An enum value.
     struct EnumValue {
-        name: String,
+        name: String, // ok
         #[serde(default, with = "serde_helpers::display_from_str_opt")]
-        name_location: Option<SourceLocation>,
+        name_location: Option<SourceLocation>, // ok
     }
 );
 
 ast_node!(
     /// A custom error definition.
     struct ErrorDefinition {
-        name: String,
+        name: String, // ok
         #[serde(default, with = "serde_helpers::display_from_str_opt")]
-        name_location: Option<SourceLocation>,
-        documentation: Option<StructuredDocumentation>,
-        error_selector: Option<String>, // TODO
-        parameters: ParameterList,
+        name_location: Option<SourceLocation>, // ok
+        documentation: Option<StructuredDocumentation>, // okish
+        error_selector: Option<String>, // notok // TODO
+        parameters: ParameterList, // ok
     }
 );
 
 ast_node!(
     /// An event definition.
     struct EventDefinition {
-        name: String,
+        name: String, // ok
         #[serde(default, with = "serde_helpers::display_from_str_opt")]
-        name_location: Option<SourceLocation>,
-        anonymous: bool,
-        event_selector: Option<String>, // TODO
-        documentation: Option<StructuredDocumentation>,
-        parameters: ParameterList,
+        name_location: Option<SourceLocation>, // ok
+        anonymous: bool, // ok
+        event_selector: Option<String>, // notok // TODO
+        documentation: Option<StructuredDocumentation>, // okish
+        parameters: ParameterList, // ok
     }
 );
 
 ast_node!(
     /// A function definition.
     struct FunctionDefinition {
-        name: String,
+        name: String, // ok
         #[serde(default, with = "serde_helpers::display_from_str_opt")]
-        name_location: Option<SourceLocation>,
+        name_location: Option<SourceLocation>, // ok
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
-        base_functions: Vec<usize>,
-        body: Option<Block>,
-        documentation: Option<StructuredDocumentation>,
-        function_selector: Option<String>, // TODO
-        implemented: bool,
-        modifiers: Vec<ModifierInvocation>,
-        overrides: Option<OverrideSpecifier>,
-        parameters: ParameterList,
-        return_parameters: ParameterList,
-        scope: usize,
-        visibility: Visibility,
+        base_functions: Vec<usize>, // ok
+        body: Option<Block>, // ok
+        documentation: Option<StructuredDocumentation>, // ok
+        function_selector: Option<String>, // ok // TODO
+        implemented: bool, // ok
+        modifiers: Vec<ModifierInvocation>, // ok
+        overrides: Option<OverrideSpecifier>, // ok
+        parameters: ParameterList, // ok
+        return_parameters: ParameterList, // ok
+        scope: usize, // ok
+        visibility: Visibility, // ok
         /// The kind of function this node defines. Only valid for Solidity versions 0.5.x and
         /// above.
         ///
         /// For cross-version compatibility use [`FunctionDefinition::kind()`].
-        kind: Option<FunctionKind>,
+        kind: Option<FunctionKind>, // notok
         /// The state mutability of the function.
         ///
         /// Note: This was introduced in Solidity 0.5.x. For cross-version compatibility use
         /// [`FunctionDefinition::state_mutability()`].
         #[serde(default)]
-        state_mutability: Option<StateMutability>,
+        state_mutability: Option<StateMutability>, // notok
         #[serde(default, rename = "virtual")]
-        is_virtual: bool,
+        is_virtual: bool, // notok
         /// Whether or not this function is the constructor. Only valid for Solidity versions below
         /// 0.5.x.
         ///
         /// After 0.5.x you must use `kind`. For cross-version compatibility use
         /// [`FunctionDefinition::kind()`].
         #[serde(default)]
-        is_constructor: bool,
+        is_constructor: bool, // notok
         /// Whether or not this function is constant (view or pure). Only valid for Solidity
         /// versions below 0.5.x.
         ///
         /// After 0.5.x you must use `state_mutability`. For cross-version compatibility use
         /// [`FunctionDefinition::state_mutability()`].
         #[serde(default)]
-        is_declared_const: bool,
+        is_declared_const: bool, // notok
         /// Whether or not this function is payable. Only valid for Solidity versions below
         /// 0.5.x.
         ///
         /// After 0.5.x you must use `state_mutability`. For cross-version compatibility use
         /// [`FunctionDefinition::state_mutability()`].
         #[serde(default)]
-        is_payable: bool,
+        is_payable: bool, // notok
     }
 );
 
@@ -777,23 +780,23 @@ impl FunctionDefinition {
 #[serde(rename_all = "camelCase")]
 pub enum FunctionKind {
     /// A contract function.
-    Function,
+    Function, // ok
     /// A receive function.
-    Receive,
+    Receive, // ok
     /// A constructor.
-    Constructor,
+    Constructor, // ok
     /// A fallback function.
-    Fallback,
+    Fallback, // ok
     /// A free-standing function.
-    FreeFunction,
+    FreeFunction, // ok
 }
 
 ast_node!(
     /// A block of statements.
     struct Block {
-        documentation: Option<String>,
+        documentation: Option<String>, // notok
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
-        statements: Vec<Statement>,
+        statements: Vec<Statement>, // ok
     }
 );
 
@@ -809,8 +812,8 @@ stmt_node!(
 
 stmt_node!(
     /// A do while statement.
-    struct DoWhileStatement {
-        body: Block,
+    struct DoWhileStatement { // notok
+        body: Block, 
         condition: Expression,
     }
 );
@@ -818,42 +821,42 @@ stmt_node!(
 stmt_node!(
     /// An emit statement.
     struct EmitStatement {
-        event_call: FunctionCall,
+        event_call: FunctionCall, // okish
     }
 );
 
 stmt_node!(
     /// An expression statement.
     struct ExpressionStatement {
-        expression: Expression,
+        expression: Expression, // ok
     }
 );
 
 stmt_node!(
     /// A for statement.
     struct ForStatement {
-        body: BlockOrStatement,
-        condition: Option<Expression>,
-        initialization_expression: Option<ExpressionOrVariableDeclarationStatement>,
-        loop_expression: Option<ExpressionStatement>,
+        body: BlockOrStatement, // ok
+        condition: Option<Expression>, // ok
+        initialization_expression: Option<ExpressionOrVariableDeclarationStatement>, // okish
+        loop_expression: Option<ExpressionStatement>, // notok
     }
 );
 
 stmt_node!(
     /// A variable declaration statement.
     struct VariableDeclarationStatement {
-        assignments: Vec<Option<usize>>,
-        declarations: Vec<Option<VariableDeclaration>>,
-        initial_value: Option<Expression>,
+        assignments: Vec<Option<usize>>, // ok
+        declarations: Vec<Option<VariableDeclaration>>, // ok
+        initial_value: Option<Expression>, // ok
     }
 );
 
 stmt_node!(
     /// An if statement.
-    struct IfStatement {
-        condition: Expression,
-        false_body: Option<BlockOrStatement>,
-        true_body: BlockOrStatement,
+    struct IfStatement { 
+        condition: Expression, // ok
+        false_body: Option<BlockOrStatement>, // ok
+        true_body: BlockOrStatement, // ok
     }
 );
 
@@ -867,16 +870,16 @@ ast_node!(
         ast: YulBlock,
         // TODO: We need this camel case for the AST, but pascal case other places in ethers-solc
         //evm_version: EvmVersion,
-        external_references: Vec<ExternalInlineAssemblyReference>,
+        external_references: Vec<ExternalInlineAssemblyReference>, // notok
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
-        flags: Vec<InlineAssemblyFlag>,
+        flags: Vec<InlineAssemblyFlag>, // notok
     }
 );
 
 /// A reference to an external variable or slot in an inline assembly block.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct ExternalInlineAssemblyReference {
+pub struct ExternalInlineAssemblyReference { // notok
     #[serde(with = "serde_helpers::display_from_str")]
     pub src: SourceLocation,
     pub declaration: usize,
@@ -893,7 +896,7 @@ pub struct ExternalInlineAssemblyReference {
 /// An assembly reference suffix.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub enum AssemblyReferenceSuffix {
+pub enum AssemblyReferenceSuffix {                // notok
     /// The reference refers to a storage slot.
     Slot,
     /// The reference refers to an offset.
@@ -906,58 +909,58 @@ pub enum AssemblyReferenceSuffix {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum InlineAssemblyFlag {
     #[serde(rename = "memory-safe")]
-    MemorySafe,
+    MemorySafe, // notok
 }
 
 stmt_node!(
     /// A placeholder statement (`_`)
-    struct PlaceholderStatement {}
+    struct PlaceholderStatement {} // okish?
 );
 
 stmt_node!(
     /// A return statement.
     struct Return {
-        expression: Option<Expression>,
-        function_return_parameters: usize,
+        expression: Option<Expression>, // ok
+        function_return_parameters: usize, // ok
     }
 );
 
 stmt_node!(
     /// A revert statement.
     struct RevertStatement {
-        error_call: FunctionCall,
+        error_call: FunctionCall, // ok
     }
 );
 
 stmt_node!(
     /// A try/catch statement.
     struct TryStatement {
-        clauses: Vec<TryCatchClause>,
-        external_call: FunctionCall,
+        clauses: Vec<TryCatchClause>, // ok
+        external_call: FunctionCall, // ok
     }
 );
 
 ast_node!(
     /// A try/catch clause.
     struct TryCatchClause {
-        block: Block,
-        error_name: String,
-        parameters: Option<ParameterList>,
+        block: Block, // ok
+        error_name: String, // okish
+        parameters: Option<ParameterList>, // oksih
     }
 );
 
 stmt_node!(
     /// An unchecked block.
-    struct UncheckedBlock {
-        statements: Vec<Statement>,
+    struct UncheckedBlock { // notok
+        statements: Vec<Statement>, // notok 
     }
 );
 
 stmt_node!(
     /// A while statement.
     struct WhileStatement {
-        body: BlockOrStatement,
-        condition: Expression,
+        body: BlockOrStatement, // ok
+        condition: Expression, // ok
     }
 );
 
@@ -965,9 +968,9 @@ ast_node!(
     /// A modifier or base constructor invocation.
     struct ModifierInvocation {
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
-        arguments: Vec<Expression>,
-        kind: Option<ModifierInvocationKind>,
-        modifier_name: IdentifierOrIdentifierPath,
+        arguments: Vec<Expression>, // ok
+        kind: Option<ModifierInvocationKind>, // ok
+        modifier_name: IdentifierOrIdentifierPath, // notok
     }
 );
 
@@ -976,50 +979,50 @@ ast_node!(
 #[serde(rename_all = "camelCase")]
 pub enum ModifierInvocationKind {
     /// A regular modifier invocation.
-    ModifierInvocation,
+    ModifierInvocation, // ok
     /// A base constructor invocation.
-    BaseConstructorSpecifier,
+    BaseConstructorSpecifier, // ok
 }
 
 ast_node!(
     /// A modifier definition.
     struct ModifierDefinition {
-        name: String,
+        name: String, // ok
         #[serde(default, with = "serde_helpers::display_from_str_opt")]
-        name_location: Option<SourceLocation>,
+        name_location: Option<SourceLocation>, // ok
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
-        base_modifiers: Vec<usize>,
-        body: Block,
-        documentation: Option<StructuredDocumentation>,
-        overrides: Option<OverrideSpecifier>,
-        parameters: ParameterList,
+        base_modifiers: Vec<usize>, // notok
+        body: Block, // ok
+        documentation: Option<StructuredDocumentation>, // okish
+        overrides: Option<OverrideSpecifier>, // ok
+        parameters: ParameterList, // ok
         #[serde(default, rename = "virtual")]
-        is_virtual: bool,
-        visibility: Visibility,
+        is_virtual: bool, // okish
+        visibility: Visibility, // ok
     }
 );
 
 ast_node!(
     /// A struct definition.
     struct StructDefinition {
-        name: String,
+        name: String, // ok
         #[serde(default, with = "serde_helpers::display_from_str_opt")]
-        name_location: Option<SourceLocation>,
-        canonical_name: String,
-        members: Vec<VariableDeclaration>,
-        scope: usize,
-        visibility: Visibility,
+        name_location: Option<SourceLocation>, // ok
+        canonical_name: String, // ok
+        members: Vec<VariableDeclaration>, // ok
+        scope: usize, // ok
+        visibility: Visibility, // ok
     }
 );
 
 ast_node!(
     /// A user defined value type definition.
     struct UserDefinedValueTypeDefinition {
-        name: String,
-        #[serde(default, with = "serde_helpers::display_from_str_opt")]
-        name_location: Option<SourceLocation>,
-        canonical_name: Option<String>,
-        underlying_type: TypeName,
+        name: String, // ok
+        #[serde(default, with ="serde_helpers::display_from_str_opt")]
+        name_location: Option<SourceLocation>, // ok
+        canonical_name: Option<String>, // ok
+        underlying_type: TypeName, // ok
     }
 );
 
@@ -1027,44 +1030,44 @@ ast_node!(
     /// A using for directive.
     struct UsingForDirective {
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
-        function_list: Vec<UsingForFunctionItem>,
+        function_list: Vec<UsingForFunctionItem>, // okish
         #[serde(default)]
-        global: bool,
-        library_name: Option<UserDefinedTypeNameOrIdentifierPath>,
-        type_name: Option<TypeName>,
+        global: bool, // ok
+        library_name: Option<UserDefinedTypeNameOrIdentifierPath>, // ok
+        type_name: Option<TypeName>, // ok
     }
 );
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum UsingForFunctionItem {
-    Function(FunctionIdentifierPath),
-    OverloadedOperator(OverloadedOperator),
+pub enum UsingForFunctionItem { // ok
+    Function(FunctionIdentifierPath), // ok
+    OverloadedOperator(OverloadedOperator), // ok
 }
 
 /// A wrapper around [IdentifierPath] for the [UsingForDirective].
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct FunctionIdentifierPath {
-    pub function: IdentifierPath,
+    pub function: IdentifierPath, // ok
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct OverloadedOperator {
-    pub definition: IdentifierPath,
-    pub operator: String,
+    pub definition: IdentifierPath, // ok
+    pub operator: String, // ok
 }
 
-ast_node!(
+ast_node!( 
     /// An import directive.
     struct ImportDirective {
-        absolute_path: String,
-        file: String,
+        absolute_path: String, // ok
+        file: String, // okish
         #[serde(default, with = "serde_helpers::display_from_str_opt")]
-        name_location: Option<SourceLocation>,
-        scope: usize,
-        source_unit: usize,
-        symbol_aliases: Vec<SymbolAlias>,
-        unit_alias: String,
+        name_location: Option<SourceLocation>, // ok
+        scope: usize, // ok
+        source_unit: usize, // ok
+        symbol_aliases: Vec<SymbolAlias>, // ok
+        unit_alias: String, // ok
     }
 );
 
@@ -1073,10 +1076,10 @@ ast_node!(
 /// Symbol aliases can be defined using the [ImportDirective].
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SymbolAlias {
-    pub foreign: Identifier,
-    pub local: Option<String>,
+    pub foreign: Identifier, // notok 
+    pub local: Option<String>, // ok
     #[serde(default, with = "serde_helpers::display_from_str_opt")]
-    pub name_location: Option<SourceLocation>,
+    pub name_location: Option<SourceLocation>, // ok
 }
 
 ast_node!(
