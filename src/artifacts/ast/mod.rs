@@ -87,16 +87,16 @@ node_group! {         // ok
 node_group! {
     Statement;
 
-    Block, // notok
-    Break, // notok
-    Continue, // notok
-    DoWhileStatement, // notok
+    Block, // not@ok
+    Break, // not@ok
+    Continue, // not@ok
+    DoWhileStatement, // not@ok
     EmitStatement, // ok
     ExpressionStatement, // ok
     ForStatement, // ok
     IfStatement,// ok
     InlineAssembly, // ok
-    PlaceholderStatement, // notok
+    PlaceholderStatement, // not@ok
     Return, // ok
     RevertStatement, // ok
     TryStatement, // ok
@@ -171,7 +171,7 @@ ast_node!(
         #[serde(default, rename = "abstract")]
         is_abstract: bool, // ok
         base_contracts: Vec<InheritanceSpecifier>, // ok
-        canonical_name: Option<String>, // notok
+        canonical_name: Option<String>, // not@ok
         contract_dependencies: Vec<usize>, // ok
         #[serde(rename = "contractKind")]
         kind: ContractKind, // ok
@@ -183,9 +183,9 @@ ast_node!(
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
         used_errors: Vec<usize>, // ok
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
-        used_events: Vec<usize>, // notok
+        used_events: Vec<usize>, // not@ok
         #[serde(default, rename = "internalFunctionIDs")]
-        internal_function_ids: BTreeMap<String, usize>, // notok
+        internal_function_ids: BTreeMap<String, usize>, // not@ok
     }
 );
 
@@ -425,7 +425,7 @@ expr_node!(
     /// An index access.
     struct IndexAccess {
         base_expression: Expression, // okish
-        index_expression: Option<Expression>, // notok
+        index_expression: Option<Expression>, // not@ok
     }
 );
 
@@ -462,7 +462,7 @@ pub enum LiteralKind {
     /// A hexadecimal string.
     HexString,
     /// A unicode string.
-    UnicodeString, // notok
+    UnicodeString, // not@ok
 }
 
 expr_node!(
@@ -581,7 +581,7 @@ ast_node!(
     /// A user defined type name.
     struct UserDefinedTypeName {
         type_descriptions: TypeDescriptions, // ok
-        contract_scope: Option<String>, // notok // TODO
+        contract_scope: Option<String>, // not@ok // TODO
         name: Option<String>, // ok
         path_node: Option<IdentifierPath>, // ok
         referenced_declaration: isize, // ok
@@ -673,7 +673,7 @@ ast_node!(
         #[serde(default, with = "serde_helpers::display_from_str_opt")]
         name_location: Option<SourceLocation>, // ok
         documentation: Option<StructuredDocumentation>, // okish
-        error_selector: Option<String>, // notok // TODO
+        error_selector: Option<String>, // not@ok // TODO
         parameters: ParameterList, // ok
     }
 );
@@ -685,7 +685,7 @@ ast_node!(
         #[serde(default, with = "serde_helpers::display_from_str_opt")]
         name_location: Option<SourceLocation>, // ok
         anonymous: bool, // ok
-        event_selector: Option<String>, // notok // TODO
+        event_selector: Option<String>, // not@ok // TODO
         documentation: Option<StructuredDocumentation>, // okish
         parameters: ParameterList, // ok
     }
@@ -812,7 +812,7 @@ stmt_node!(
 
 stmt_node!(
     /// A do while statement.
-    struct DoWhileStatement { // notok
+    struct DoWhileStatement { // not@ok
         body: Block, 
         condition: Expression,
     }
@@ -991,7 +991,7 @@ ast_node!(
         #[serde(default, with = "serde_helpers::display_from_str_opt")]
         name_location: Option<SourceLocation>, // ok
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
-        base_modifiers: Vec<usize>, // notok
+        base_modifiers: Vec<usize>, // not@ok
         body: Block, // ok
         documentation: Option<StructuredDocumentation>, // okish
         overrides: Option<OverrideSpecifier>, // ok
