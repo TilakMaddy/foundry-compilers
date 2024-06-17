@@ -30,8 +30,8 @@ node_group! {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct YulBlock {
     #[serde(with = "serde_helpers::display_from_str")]
-    pub src: SourceLocation,
-    pub statements: Vec<YulStatement>,
+    pub src: SourceLocation, // notok
+    pub statements: Vec<YulStatement>, // ok
 }
 
 /// A Yul assignment statement.
@@ -39,9 +39,9 @@ pub struct YulBlock {
 #[serde(rename_all = "camelCase")]
 pub struct YulAssignment {
     #[serde(with = "serde_helpers::display_from_str")]
-    pub src: SourceLocation,
-    pub value: YulExpression,
-    pub variable_names: Vec<YulIdentifier>,
+    pub src: SourceLocation, // notok
+    pub value: YulExpression, // ok
+    pub variable_names: Vec<YulIdentifier>, // ok
 }
 
 /// A Yul function call.
@@ -49,17 +49,17 @@ pub struct YulAssignment {
 #[serde(rename_all = "camelCase")]
 pub struct YulFunctionCall {
     #[serde(with = "serde_helpers::display_from_str")]
-    pub src: SourceLocation,
-    pub arguments: Vec<YulExpression>,
-    pub function_name: YulIdentifier,
+    pub src: SourceLocation, // notok
+    pub arguments: Vec<YulExpression>, // ok
+    pub function_name: YulIdentifier, // ok
 }
 
 /// A Yul identifier.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct YulIdentifier {
     #[serde(with = "serde_helpers::display_from_str")]
-    pub src: SourceLocation,
-    pub name: String,
+    pub src: SourceLocation, // notok
+    pub name: String, // ok
 }
 
 /// A literal Yul value.
@@ -68,10 +68,10 @@ pub struct YulIdentifier {
 pub struct YulLiteral {
     #[serde(with = "serde_helpers::display_from_str")]
     pub src: SourceLocation,
-    pub hex_value: Option<String>, // TODO
-    pub value: Option<String>,     // TODO
-    pub kind: YulLiteralKind,
-    pub type_name: Option<String>, // TODO
+    pub hex_value: Option<String>, // ok // TODO
+    pub value: Option<String>,     // ok // TODO
+    pub kind: YulLiteralKind, // ok
+    pub type_name: Option<String>, // notok // TODO
 }
 
 /// Yul literal value kinds.
@@ -88,7 +88,7 @@ pub enum YulLiteralKind {
 
 /// A Yul keyword.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct YulKeyword {
+pub struct YulKeyword { // notok
     #[serde(with = "serde_helpers::display_from_str")]
     pub src: SourceLocation,
 }
@@ -104,19 +104,19 @@ pub type YulLeave = YulKeyword;
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct YulExpressionStatement {
     #[serde(with = "serde_helpers::display_from_str")]
-    pub src: SourceLocation,
-    pub expression: YulExpression,
+    pub src: SourceLocation, // notok
+    pub expression: YulExpression, // ok
 }
 
 /// A Yul for loop.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct YulForLoop {
     #[serde(with = "serde_helpers::display_from_str")]
-    pub src: SourceLocation,
-    pub body: YulBlock,
-    pub condition: YulExpression,
-    pub post: YulBlock,
-    pub pre: YulBlock,
+    pub src: SourceLocation, // ok
+    pub body: YulBlock, // ok
+    pub condition: YulExpression, // ok
+    pub post: YulBlock, // ok
+    pub pre: YulBlock, // ok
 }
 
 /// A Yul function definition.
@@ -124,13 +124,13 @@ pub struct YulForLoop {
 #[serde(rename_all = "camelCase")]
 pub struct YulFunctionDefinition {
     #[serde(with = "serde_helpers::display_from_str")]
-    pub src: SourceLocation,
-    pub body: YulBlock,
-    pub name: String,
+    pub src: SourceLocation, // notok
+    pub body: YulBlock, // ok
+    pub name: String, // ok
     #[serde(default)]
-    pub parameters: Vec<YulTypedName>,
+    pub parameters: Vec<YulTypedName>, // ok
     #[serde(default)]
-    pub return_variables: Vec<YulTypedName>,
+    pub return_variables: Vec<YulTypedName>, // notok
 }
 
 /// A Yul type name.
@@ -138,37 +138,37 @@ pub struct YulFunctionDefinition {
 #[serde(rename_all = "camelCase")]
 pub struct YulTypedName {
     #[serde(with = "serde_helpers::display_from_str")]
-    pub src: SourceLocation,
-    pub name: String,
+    pub src: SourceLocation, // notok
+    pub name: String, // ok
     #[serde(rename = "type")]
-    pub type_name: String, // TODO
+    pub type_name: String, // ok // TODO
 }
 
 /// A Yul if statement.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct YulIf {
     #[serde(with = "serde_helpers::display_from_str")]
-    pub src: SourceLocation,
-    pub body: YulBlock,
-    pub condition: YulExpression,
+    pub src: SourceLocation, // notok
+    pub body: YulBlock, // ok
+    pub condition: YulExpression, // ok
 }
 
 /// A Yul switch statement.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct YulSwitch {
     #[serde(with = "serde_helpers::display_from_str")]
-    pub src: SourceLocation,
-    pub cases: Vec<YulCase>,
-    pub expression: YulExpression,
+    pub src: SourceLocation, // notok
+    pub cases: Vec<YulCase>, // ok
+    pub expression: YulExpression, // ok
 }
 
 /// A Yul switch statement case.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct YulCase {
     #[serde(with = "serde_helpers::display_from_str")]
-    pub src: SourceLocation,
-    pub body: YulBlock,
-    pub value: YulCaseValue,
+    pub src: SourceLocation, // ok
+    pub body: YulBlock, // ok
+    pub value: YulCaseValue, // okish
 }
 
 /// A Yul switch case value.
