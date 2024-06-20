@@ -121,7 +121,7 @@ node_group! {
 }
 
 node_group! {
-    TypeName; // notok (i think because of String(String))
+    TypeName; // not@ok (i think because of String(String))
 
     ArrayTypeName,
     ElementaryTypeName,
@@ -206,7 +206,7 @@ ast_node!(
     struct InheritanceSpecifier {
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
         arguments: Vec<Expression>, // ok
-        base_name: UserDefinedTypeNameOrIdentifierPath, // notok
+        base_name: UserDefinedTypeNameOrIdentifierPath, // not@ok
     }
 );
 
@@ -350,14 +350,14 @@ expr_node!(
 
 expr_node!(
     struct ElementaryTypeNameExpression {
-        type_name: ElementaryOrRawTypeName, // notok
+        type_name: ElementaryOrRawTypeName, // okish
     }
 );
 
 // TODO: Better name
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum ElementaryOrRawTypeName { // notok
+pub enum ElementaryOrRawTypeName { // okish
     /// An [ElementaryTypeName] node that describes the type.
     ///
     /// This variant applies to newer compiler versions.
@@ -546,7 +546,7 @@ ast_node!(
     }
 );
 
-impl VariableDeclaration { // notok
+impl VariableDeclaration { // not@ok
     /// Returns the mutability of the variable that was declared.
     ///
     /// This is a helper to check variable mutability across Solidity versions.
@@ -573,7 +573,7 @@ ast_node!(
 ast_node!(
     /// An override specifier.
     struct OverrideSpecifier {
-        overrides: Vec<UserDefinedTypeNameOrIdentifierPath>, // notok
+        overrides: Vec<UserDefinedTypeNameOrIdentifierPath>, // not@ok
     }
 );
 
@@ -713,36 +713,36 @@ ast_node!(
         /// above.
         ///
         /// For cross-version compatibility use [`FunctionDefinition::kind()`].
-        kind: Option<FunctionKind>, // notok
+        kind: Option<FunctionKind>, // not@ok
         /// The state mutability of the function.
         ///
         /// Note: This was introduced in Solidity 0.5.x. For cross-version compatibility use
         /// [`FunctionDefinition::state_mutability()`].
         #[serde(default)]
-        state_mutability: Option<StateMutability>, // notok
+        state_mutability: Option<StateMutability>, // not@ok
         #[serde(default, rename = "virtual")]
-        is_virtual: bool, // notok
+        is_virtual: bool, // not@ok
         /// Whether or not this function is the constructor. Only valid for Solidity versions below
         /// 0.5.x.
         ///
         /// After 0.5.x you must use `kind`. For cross-version compatibility use
         /// [`FunctionDefinition::kind()`].
         #[serde(default)]
-        is_constructor: bool, // notok
+        is_constructor: bool, // not@ok
         /// Whether or not this function is constant (view or pure). Only valid for Solidity
         /// versions below 0.5.x.
         ///
         /// After 0.5.x you must use `state_mutability`. For cross-version compatibility use
         /// [`FunctionDefinition::state_mutability()`].
         #[serde(default)]
-        is_declared_const: bool, // notok
+        is_declared_const: bool, // not@ok
         /// Whether or not this function is payable. Only valid for Solidity versions below
         /// 0.5.x.
         ///
         /// After 0.5.x you must use `state_mutability`. For cross-version compatibility use
         /// [`FunctionDefinition::state_mutability()`].
         #[serde(default)]
-        is_payable: bool, // notok
+        is_payable: bool, // not@ok
     }
 );
 
@@ -794,7 +794,7 @@ pub enum FunctionKind {
 ast_node!(
     /// A block of statements.
     struct Block {
-        documentation: Option<String>, // notok
+        documentation: Option<String>, // okish
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
         statements: Vec<Statement>, // ok
     }
@@ -838,7 +838,7 @@ stmt_node!(
         body: BlockOrStatement, // ok
         condition: Option<Expression>, // ok
         initialization_expression: Option<ExpressionOrVariableDeclarationStatement>, // okish
-        loop_expression: Option<ExpressionStatement>, // notok
+        loop_expression: Option<ExpressionStatement>, // not@ok
     }
 );
 
@@ -945,14 +945,14 @@ ast_node!(
     struct TryCatchClause {
         block: Block, // ok
         error_name: String, // okish
-        parameters: Option<ParameterList>, // oksih
+        parameters: Option<ParameterList>, // okish
     }
 );
 
 stmt_node!(
     /// An unchecked block.
-    struct UncheckedBlock { // notok
-        statements: Vec<Statement>, // notok 
+    struct UncheckedBlock { // okish
+        statements: Vec<Statement>, // okish 
     }
 );
 
@@ -970,7 +970,7 @@ ast_node!(
         #[serde(default, deserialize_with = "serde_helpers::default_for_null")]
         arguments: Vec<Expression>, // ok
         kind: Option<ModifierInvocationKind>, // ok
-        modifier_name: IdentifierOrIdentifierPath, // notok
+        modifier_name: IdentifierOrIdentifierPath, // not@ok
     }
 );
 
@@ -1076,7 +1076,7 @@ ast_node!(
 /// Symbol aliases can be defined using the [ImportDirective].
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SymbolAlias {
-    pub foreign: Identifier, // notok 
+    pub foreign: Identifier, // not@ok 
     pub local: Option<String>, // ok
     #[serde(default, with = "serde_helpers::display_from_str_opt")]
     pub name_location: Option<SourceLocation>, // ok
